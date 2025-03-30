@@ -5,7 +5,7 @@
   <title>Discord Bot Live Status</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Basic reset and layout */
+    /* Reset and basic styles */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -64,15 +64,15 @@
     </div>
   </div>
   <script>
-    // The API endpoint is relative to your server's domain
+    // API endpoint (assumes same domain)
     const apiUrl = '/api/status';
 
-    // Fetch and update the status every 5 seconds
+    // Poll the API every 5 seconds for the current status
     function fetchStatus() {
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-          const status = data.status || "Unknown";
+          const status = data.status || "unknown";
           document.getElementById('status-text').textContent = "Status: " + capitalize(status);
           document.getElementById('status-dot').style.background = getColor(status);
         })
@@ -81,12 +81,12 @@
         });
     }
 
-    // Helper to capitalize the first letter
+    // Helper: Capitalize first letter
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    // Helper to get the dot color based on status
+    // Helper: Return a color based on the status
     function getColor(status) {
       switch(status.toLowerCase()) {
         case 'offline': return '#ff6666'; // light red
