@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Discord Bot Live Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Basic reset and layout */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f4f6f8;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .status-page {
+      width: 95%;
+      max-width: 800px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    header {
+      background: #0073e6;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    header h1 { font-size: 28px; margin-bottom: 8px; }
+    header p { font-size: 16px; opacity: 0.9; }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .status-indicator .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-right: 10px;
+      background: gray;
+      transition: background 0.3s ease;
+    }
+    .status-indicator h2 { font-size: 22px; }
+  </style>
+</head>
+<body>
+  <div class="status-page">
+    <!-- Header -->
+    <header>
+      <h1>Discord Bot Status</h1>
+      <p>Live status updated via Discord bot interactions</p>
+    </header>
+    <!-- Status Display -->
+    <div class="status-indicator">
+      <div class="dot" id="status-dot"></div>
+      <h2 id="status-text">Status: Unknown</h2>
+    </div>
+  </div>
+  <script>
+    // The API endpoint is relative to your server's domain
+    const apiUrl = '/api/status';
 
+    // Fetch and update the status every 5 seconds
+    function fetchStatus() {
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const status = data.status || "Unknown";
+          document.getElementById('status-text').textContent = "Status: " + capitalize(status);
+          document.getElementById('status-dot').style.background = getColor(status);
+        })
+        .catch(error => {
+          console.error('Error fetching status:', error);
+        });
+    }
+
+    // Helper to capitalize the first letter
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Helper to get the dot color based on status
+    function getColor(status) {
+      switch(status.toLowerCase()) {
+        case 'offline': return '#ff6666'; // light red
+        case 'testing': return '#ffa500'; // orange
+        case 'online':  return '#28a745'; // green
+        default: return 'gray';
+      }
+    }
+
+    fetchStatus();
+    setInterval(fetchStatus, 5000);
+  </script>
+</body>
+</html>
